@@ -1,46 +1,104 @@
 from tkinter import *
-from character import juego
+from laboratorio import juego
+import time
+import pygame
+from tkinter import messagebox
+
+#comienzo
+#El boton da comienzo al juego
+
+ind_lista = 0
+
+def hip(event):
+    global ind_lista, contenedor
+    root.withdraw()
+
+    pantalla = Toplevel()
+    pantalla.title("pokemon")
+    pantalla.geometry("750x490")
+
+    contenedor = Canvas(pantalla, width=750, height=500)
+
+    lista = ["img\i_1.gif", "img\i_2.gif", "img\i_3.gif", "img\i_4.gif", "img\i_5.gif", "img\i_6.gif",
+             "img\i_7.gif", "img\i_8.gif", "img\i_9.gif", "img\i_10.gif", "img\i_11.gif", "img\i_12.gif",
+             "img\i_13.gif", "img\i_14.gif"]
+    lista_oak = []
+
+    for files in lista:
+        img01 = PhotoImage(file=files)
+        lista_oak.append(img01)
+
+    actual = contenedor.create_image(0, 0, anchor=NW, image=lista_oak[ind_lista])
+
+    def siguiente(event):
+        global ind_lista
+        ind_lista += 1
+        contenedor.itemconfig(actual, image=lista_oak[ind_lista])
+        if ind_lista == 11:
+            nombre = Entry(pantalla)
+            nombre.place(x=50, y=100)
+        elif ind_lista == 13:
+            transicion()
+
+    contenedor.bind("<Right>", siguiente)
+    contenedor.focus_set()
+    contenedor.pack()
+    pantalla.mainloop()
 
 
-def comienzo():
-    root = Toplevel()
-    main.withdraw()
-    root.title("Pokemon")
-    root.geometry("400x400")
+def transicion():
+    global contenedor
+    tran_lista = ["img\q_1.gif", "img\q_2.gif", "img\q_3.gif", "img\q_4.gif", "img\q_5.gif", "img\q_6.gif"]
+    lista_fotos = []
 
-    diag1 = Label(root, text="Hola " + entrada_nombre.get() + "! \n Bienvenido al mundo pokemon. \n Mi nombre es OAK,\
-    este mundo esta habitado por criaturas \n llamadas pokemon, para algunas persona \n son mascotas y otras los usan \
-    para luchar, dejando \n esto de lado tu propia leyenda pokemon esta \n punto de comenzar! Un mundo de aventuras \n \
-    te esperan! Vamos!")
-    img_1 = PhotoImage(file="imagenes\doctor.png")
-    label_com = Label(root, image=img_1, bg="black")
-    boton_game = Button(root, text="Continuar", command=juego, width=8, height=3, bg="yellow")
+    for ind in tran_lista:
+        foto = PhotoImage(file=ind)
+        lista_fotos.append(foto)
 
-    boton_game.pack(side=BOTTOM)
-    diag1.pack(side=TOP)
-    label_com.pack(side=TOP)
-
-
-
-main = Tk()
-main.title("Pokemon")
-main.geometry("400x400")
-
-nombre = Label(main, text="¿Cual es tu nombre? \n Nombre:")
-entrada_nombre = Entry(main)
-boton1 = Button(main, text="Jugar", command=comienzo, width=8, height=3, bg="yellow")
-
-imagen_1 = PhotoImage(file="imagenes\pokemon1.png")
-label_img = Label(main, image=imagen_1)
-
-imagen_2 = PhotoImage(file="imagenes\doctor.png")
-label_img1 = Label(main, image=imagen_2)
-
-boton1.pack(side=BOTTOM)
-label_img.pack(side=TOP)
-label_img1.pack(side=BOTTOM)
-nombre.pack(side=LEFT)
-entrada_nombre.pack(side=LEFT)
+    # loop through the gif image objects for a while
+    for t in range(0, 1):
+        for gif in lista_fotos:
+            contenedor.delete(ALL)
+            contenedor.create_image(740, 500,anchor=SE ,image=gif)
+            contenedor.update()
+            time.sleep(0.7)
+        if t == 0:
+            juego()
 
 
-main.mainloop()
+
+root = Tk()
+root.title("pokemon")
+root.geometry("740x500")
+
+imagelist = ["imagenes\Frame 1.gif", "imagenes\Frame 2.gif"]
+
+# extract width and height info
+photo = PhotoImage(file=imagelist[0])
+width = photo.width()
+height = photo.height()
+canvas = Canvas(root, width=width, height=height)
+canvas.pack()
+
+#Entrada: El nombre del jugador.
+#Salida: La siguiente función.
+#Guarda el nombre introducido en el Entry para ser usado en el juego.
+
+
+canvas.bind("<Button-1>", hip)
+# create a list of image objects
+giflist = []
+
+for imagefile in imagelist:
+    photo = PhotoImage(file=imagefile)
+    giflist.append(photo)
+
+# loop through the gif image objects for a while
+for k in range(0, 1000):
+    for gif in giflist:
+        canvas.delete(ALL)
+        canvas.create_image(width / 2.0, height / 2.0, image=gif)
+        canvas.update()
+        time.sleep(0.5)
+
+root.mainloop()
